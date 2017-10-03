@@ -7,9 +7,9 @@ open System
   match numbers with
     | "" -> 0
     | _ when numbers.Length=1 -> Int32.Parse numbers
-    | _ when (numbers.Contains ",") ->        
-        numbers.Split [|','|] |> sumArr
+    | _ ->        
+        numbers.Split [|',' ; '\n'|] |> sumArr
 
 
-
+Add " 1\n2,3\n4"
 
