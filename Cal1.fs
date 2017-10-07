@@ -1,25 +1,33 @@
 
 open System
 
-type  CountNeg (negNums) =
-   inherit Exception(sprintf "negatives anre not allowed %A" negNums)  
+exception IsNeg of int[]
 
-type SumNum(numbers : string) = 
-   let rec Add2 delimiters numbers = 
-       match numbers with
-       | "" -> 0
-       | _ when numbers.StartsWith "//" -> 
-            numbers.Substring  ((numbers.IndexOf "\n") + 1 ) |> Add2 [|numbers.[2]|]
+let SumNum (numbers :string) =
+     let  x=numbers.Substring  ((numbers.IndexOf "\n") + 1 ) 
+     x.Split [|numbers.[2]|]  
+ 
+   |> Array.map Int32.Parse 
+   |> Array.sum
 
-       | _ -> 
-          let negNums, posNums = 
-            [for i in numbers.Split delimiters -> Int32.Parse i] |> List.partition (fun i -> i <0)
-          if negNums.Length > 0 then raise (CountNeg negNums)
+  
+let SumNeg numbers  = 
+   match numbers |> Array.filter (fun n -> n <0) with
+     | negNums when negNums.Length> 0 -> raise (IsNeg negNums) 
+     | _ -> numbers
+ 
 
-          posNums |> List.reduce( fun acc elem -> acc + (int elem)) 
 
-   member x.Add numbers =  numbers |> Add2 [| ',' ; '\n'|]  
+let Add (numbers : string) =
+   
+   match numbers with 
+    | "" -> 0
 
+    | _ when numbers.StartsWith "//" -> SumNum numbers
+
+            
+
+Add "//;\n2;-3;5"
 
 
 
